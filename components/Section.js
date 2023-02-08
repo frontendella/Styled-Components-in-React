@@ -32,34 +32,42 @@ const ProgressSection = styled.div`
 
 const ProgressBar = styled.div`
     background-color: ${({ progress }) => {
-        const percent = progress.slice(0, -1)
-        const integer = parseInt(percent)
-        return integer > 85
-            ? 'red'
-            : integer > 65
-                ? 'orange'
-                : integer > 45
-                    ? 'yellow'
-                    : 'green'
+        let numeric = progress.slice(0, -1)
+        let integer = parseInt(numeric)
+
+        if (integer >= 80) return '#FFB3BA';
+        else if (integer >= 60) return '#FFDFBA';
+        else if (integer >= 40) return '#FFFFBA';
+        else return '#BAFFC9';
+
     }};
     height: 50px;
     width: ${({ progress }) => progress || '0%'};
 `
 
-const Section = ({ text, progress }) => {
+const TodayProgressBar = styled(ProgressBar)`
+    background-color: purple;
+`
+
+const Section = ({ text, progress, day }) => {
+    let today = new Date()
+    let dayOfTheWeek = today.getDay()
 
     const isWeekend = text === 'S'
 
+    const isToday = day === dayOfTheWeek
+
     return (
-        <Fragment>
+        <>
             <StyledSection>
                 {isWeekend && <WeekendTitle>{text}</WeekendTitle>}
                 {!isWeekend && <WeekdayTitle>{text}</WeekdayTitle>}
                 <ProgressSection>
-                    <ProgressBar progress={progress} />
+                    {isToday && <TodayProgressBar progress={progress} />}
+                    {!isToday && <ProgressBar progress={progress} />}
                 </ProgressSection>
             </StyledSection>
-        </Fragment>
+        </>
     )
 }
 
